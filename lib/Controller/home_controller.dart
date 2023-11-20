@@ -16,6 +16,7 @@ class HomeController {
   TextEditingController txt_email = TextEditingController();
   TextEditingController txt_password = TextEditingController();
   TextEditingController txt_confirmPass = TextEditingController();
+  TextEditingController intialdateval = TextEditingController();
 
   TextEditingController txtlogin_email = TextEditingController();
   TextEditingController txtlogin_password = TextEditingController();
@@ -36,6 +37,7 @@ class HomeController {
 
   String? encodeData;
   String? decodeData;
+  int? age;
 
   Future<void> setData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -54,8 +56,10 @@ class HomeController {
       "name": txt_name.text,
       "email": txt_email.text,
       "password": txt_password.text,
-      "confirm": txt_confirmPass.text,
-      "Dob": DateFormat("M/d/yyyy").format(selectedDate),
+      "age": age,
+      "Dob": DateFormat("d/M/yyyy").format(selectedDate),
+      "date": selectedDate.toString(),
+      // "Dob": selectedDate,
     });
     setData();
   }
@@ -64,9 +68,11 @@ class HomeController {
     userList[index] = ({
       "name": txtup_name.text,
       "email": txtup_email.text,
-      "Dob": DateFormat("M/d/yyyy").format(selectedDate),
+      "Dob": DateFormat("d/M/yyyy").format(selectedDate),
       "password": txtup_password.text,
       "confirm": txtup_confirmPass,
+      "age": age,
+      "date": selectedDate.toString(),
     });
     setData();
   }
@@ -89,7 +95,7 @@ class HomeController {
   }
 
   bool isAdult(DateTime birthDateString) {
-    String datePattern = "M/d/yyyy";
+    String datePattern = "d/M/yyyy";
 
     DateTime birthDate = birthDateString;
     DateTime today = DateTime.now();
@@ -101,5 +107,28 @@ class HomeController {
     return yearDiff > 18 ||
         yearDiff == 18 && monthDiff > 0 ||
         yearDiff == 18 && monthDiff == 0 && dayDiff >= 0;
+  }
+
+  void sort() {
+    userList.sort((a, b) => (a['age']).compareTo(b['age']));
+  }
+
+  int calculateAge(DateTime birthDate) {
+    DateTime currentDate = DateTime.now();
+    int age = currentDate.year - birthDate.year;
+    int month1 = currentDate.month;
+    int month2 = birthDate.month;
+
+    if (month2 > month1) {
+      age--;
+    } else if (month1 == month2) {
+      int day1 = currentDate.day;
+      int day2 = birthDate.day;
+
+      if (day2 > day1) {
+        age--;
+      }
+    }
+    return age;
   }
 }

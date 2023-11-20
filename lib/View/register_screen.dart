@@ -2,6 +2,7 @@ import 'package:date_field/date_field.dart';
 import 'package:flutter/material.dart';
 import 'package:form_validator/form_validator.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 
 import '../Controller/home_controller.dart';
 
@@ -22,6 +23,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   bool passwordVisible = false;
   bool passwordVisible1 = false;
+
+  TextStyle poppins = GoogleFonts.poppins();
+
+  Future selectDate() async {
+    DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: DateTime.now(),
+        firstDate: new DateTime(1920),
+        lastDate: new DateTime(2030));
+    if (picked != null)
+      setState(() => {
+            HomeController.homecontroller.selectedDate = picked,
+            HomeController.homecontroller.intialdateval.text =
+                DateFormat('d/M/yyyy')
+                    .format(HomeController.homecontroller.selectedDate),
+          });
+  }
 
   @override
   void initState() {
@@ -50,7 +68,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ? updateformkey
                         : formkey,
                     child: Padding(
-                      padding: const EdgeInsets.all(15),
+                      padding: EdgeInsets.all(15),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -63,8 +81,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 return 'Enter Your Name';
                               }
                             },
-                            decoration: const InputDecoration(
-                                hintText: 'Enter Your Name'),
+                            decoration: InputDecoration(
+                              hintText: 'Enter Your Name',
+                              hintStyle: GoogleFonts.poppins(),
+                            ),
                           ),
                           TextFormField(
                             controller: HomeController.homecontroller.isUpdate
@@ -72,10 +92,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 : HomeController.homecontroller.txt_email,
                             validator:
                                 ValidationBuilder().required().email().build(),
-                            decoration: const InputDecoration(
-                                hintText: 'Enter Your Email'),
+                            decoration: InputDecoration(
+                              hintText: 'Enter Your Email',
+                              hintStyle: GoogleFonts.poppins(),
+                            ),
                           ),
+
                           DateTimeFormField(
+                            initialValue: HomeController.homecontroller.isUpdate
+                                ? HomeController.homecontroller.selectedDate
+                                : null,
                             validator: (value) {
                               if (value == null) {
                                 return 'Please Select date';
@@ -86,17 +112,51 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 return "Age must be 18";
                               }
                             },
-
-                            // initialValue:  HomeController.homecontroller.selectedDate,
                             onDateSelected: (value) {
                               HomeController.homecontroller.selectedDate =
                                   value;
+
+                              HomeController.homecontroller.age = HomeController
+                                  .homecontroller
+                                  .calculateAge(HomeController
+                                      .homecontroller.selectedDate);
                             },
                             mode: DateTimeFieldPickerMode.date,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               hintText: 'Date Of Birth',
+                              hintStyle: GoogleFonts.poppins(),
                             ),
                           ),
+                          // TextFormField(
+                          //   autocorrect: false,
+                          //   onChanged: (value) {},
+                          //   controller:
+                          //       HomeController.homecontroller.intialdateval,
+                          //   onSaved: (value) {
+                          //     HomeController.homecontroller.selectedDate =
+                          //         value as DateTime;
+                          //   },
+                          //   onTap: () {
+                          //     selectDate();
+                          //     print(HomeController.homecontroller.age);
+                          //     FocusScope.of(context)
+                          //         .requestFocus(new FocusNode());
+                          //   },
+                          //   validator: (value) {
+                          //     if (value == null) {
+                          //       return 'Please Select date';
+                          //     } else if (HomeController.homecontroller.isAdult(
+                          //             HomeController
+                          //                 .homecontroller.selectedDate) !=
+                          //         true) {
+                          //       return "Age must be 18";
+                          //     }
+                          //   },
+                          //   maxLines: 1,
+                          //   decoration: InputDecoration(
+                          //       icon: const Icon(Icons.calendar_today),
+                          //       hintText: "Select Dob"),
+                          // ),
                           TextFormField(
                             keyboardType: TextInputType.visiblePassword,
                             controller: HomeController.homecontroller.isUpdate
@@ -109,17 +169,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             },
                             obscureText: passwordVisible,
                             decoration: InputDecoration(
-                                suffixIcon: IconButton(
-                                  icon: Icon(passwordVisible
-                                      ? Icons.visibility
-                                      : Icons.visibility_off),
-                                  onPressed: () {
-                                    setState(() {
-                                      passwordVisible = !passwordVisible;
-                                    });
-                                  },
-                                ),
-                                hintText: 'Enter Password'),
+                              suffixIcon: IconButton(
+                                icon: Icon(passwordVisible
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: () {
+                                  setState(() {
+                                    passwordVisible = !passwordVisible;
+                                  });
+                                },
+                              ),
+                              hintText: 'Enter Password',
+                              hintStyle: poppins,
+                            ),
                           ),
                           TextFormField(
                             controller: HomeController.homecontroller.isUpdate
@@ -144,17 +206,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             },
                             obscureText: passwordVisible1,
                             decoration: InputDecoration(
-                                suffixIcon: IconButton(
-                                  icon: Icon(passwordVisible1
-                                      ? Icons.visibility
-                                      : Icons.visibility_off),
-                                  onPressed: () {
-                                    setState(() {
-                                      passwordVisible1 = !passwordVisible1;
-                                    });
-                                  },
-                                ),
-                                hintText: 'Enter Confirm Password'),
+                              suffixIcon: IconButton(
+                                icon: Icon(passwordVisible1
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: () {
+                                  setState(() {
+                                    passwordVisible1 = !passwordVisible1;
+                                  });
+                                },
+                              ),
+                              hintText: 'Enter Confirm Password',
+                              hintStyle: poppins,
+                            ),
                           ),
                           const SizedBox(
                             height: 10,
@@ -164,11 +228,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                   shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
                               )),
+
                               // style: ButtonStyle(
                               //     shape: MaterialStateProperty.all(
                               //         RoundedRectangleBorder(
                               //             borderRadius:
                               //                 BorderRadius.circular(15)))),
+
                               onPressed: () {
                                 if (HomeController.homecontroller.isUpdate ==
                                     true) {
@@ -176,19 +242,46 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     HomeController.homecontroller.tabController
                                         .animateTo(2);
                                     setState(() {
+                                      HomeController.homecontroller.age =
+                                          HomeController.homecontroller
+                                              .calculateAge(HomeController
+                                                  .homecontroller.selectedDate);
                                       HomeController.homecontroller.updateUser(
                                           HomeController.homecontroller.index);
                                     });
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text("User Updated !!"),
+                                      backgroundColor: Colors.green.shade200,
+                                    ));
                                     HomeController.homecontroller.isUpdate =
                                         false;
+                                    HomeController.homecontroller.txtup_name
+                                        .clear();
+                                    HomeController.homecontroller.txtup_email
+                                        .clear();
+                                    HomeController.homecontroller.txtup_password
+                                        .clear();
+                                    HomeController
+                                        .homecontroller.txtup_confirmPass
+                                        .clear();
                                   }
                                 } else {
                                   if (formkey.currentState!.validate()) {
                                     HomeController.homecontroller.tabController
                                         .animateTo(2);
                                     setState(() {
+                                      HomeController.homecontroller.age =
+                                          HomeController.homecontroller
+                                              .calculateAge(HomeController
+                                                  .homecontroller.selectedDate);
                                       HomeController.homecontroller.addUser();
                                     });
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text("User Added !!"),
+                                      backgroundColor: Colors.green.shade200,
+                                    ));
                                     HomeController.homecontroller.txt_name
                                         .clear();
                                     HomeController.homecontroller.txt_email
@@ -200,6 +293,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                         .clear();
                                   }
                                 }
+                                HomeController.homecontroller.sort();
                               },
                               child: HomeController.homecontroller.isUpdate
                                   ? Text(

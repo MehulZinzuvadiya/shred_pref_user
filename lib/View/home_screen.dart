@@ -38,7 +38,7 @@ class _HomeScreenState extends State<HomeScreen>
           bottom: TabBar(
               controller: HomeController.homecontroller.tabController,
               labelPadding: EdgeInsets.all(10),
-              tabs: [
+              tabs: const [
                 Icon(Icons.verified_user),
                 Icon(Icons.person),
                 Icon(Icons.group),
@@ -46,7 +46,7 @@ class _HomeScreenState extends State<HomeScreen>
         ),
         body: TabBarView(
           controller: HomeController.homecontroller.tabController,
-          children: [
+          children: const [
             LoginScreen(),
             RegisterScreen(),
             UserDetail(),

@@ -25,7 +25,7 @@ class _UserDetailState extends State<UserDetail> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.green,
         onPressed: () {},
-        child: Icon(Icons.sync),
+        child: const Icon(Icons.sync),
       ),
       body: Padding(
         padding: const EdgeInsets.all(10),
@@ -71,12 +71,16 @@ class _UserDetailState extends State<UserDetail> {
                                       style: GoogleFonts.poppins(fontSize: 18),
                                     ),
                                     Text(
+                                      "Age:",
+                                      style: GoogleFonts.poppins(fontSize: 18),
+                                    ),
+                                    Text(
                                       "Password:",
                                       style: GoogleFonts.poppins(fontSize: 18),
                                     ),
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   width: 30,
                                 ),
                                 Column(
@@ -92,6 +96,10 @@ class _UserDetailState extends State<UserDetail> {
                                     ),
                                     Text(
                                       "${HomeController.homecontroller.userList[index]['Dob']}",
+                                      style: GoogleFonts.poppins(fontSize: 18),
+                                    ),
+                                    Text(
+                                      "${HomeController.homecontroller.userList[index]['age']}",
                                       style: GoogleFonts.poppins(fontSize: 18),
                                     ),
                                     Text(
@@ -132,23 +140,28 @@ class _UserDetailState extends State<UserDetail> {
                                         text: HomeController.homecontroller
                                             .userList[index]['password']);
 
+                                HomeController.homecontroller.selectedDate =
+                                    DateTime.parse(
+                                        "${HomeController.homecontroller.userList[index]['date']}");
+
                                 HomeController.homecontroller.txtup_password =
                                     TextEditingController(
                                   text: HomeController.homecontroller
                                       .userList[index]['password'],
                                 );
+
                                 HomeController.homecontroller.tabController
                                     .animateTo(1);
                               });
                             },
-                            icon: Icon(Icons.edit)),
+                            icon: const Icon(Icons.edit)),
                         IconButton(
                             onPressed: () {
                               setState(() {
                                 HomeController.homecontroller.deleteData(index);
                               });
                             },
-                            icon: Icon(Icons.delete)),
+                            icon: const Icon(Icons.delete)),
                       ],
                     )),
                   ],

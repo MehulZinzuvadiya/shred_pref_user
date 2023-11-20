@@ -14,6 +14,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String email = "";
   String password = "";
+  TextStyle poppins = GoogleFonts.poppins();
+  bool passwordShow = true;
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +50,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 return 'Enter Your Email';
                               }
                             },
-                            decoration:
-                                InputDecoration(hintText: 'Enter Your Email'),
+                            decoration: InputDecoration(
+                              hintText: 'Enter Your Email',
+                              hintStyle: poppins,
+                            ),
                           ),
                           TextFormField(
                             controller:
@@ -59,12 +63,23 @@ class _LoginScreenState extends State<LoginScreen> {
                                 return 'Enter Your Password';
                               }
                             },
-                            obscureText: true,
+                            obscureText: passwordShow,
                             decoration: InputDecoration(
-                                suffixIcon: Icon(Icons.remove_red_eye),
-                                hintText: 'Enter Your Password'),
+                              suffixIcon: IconButton(
+                                icon: Icon(passwordShow
+                                    ? Icons.visibility
+                                    : Icons.visibility_off),
+                                onPressed: () {
+                                  setState(() {
+                                    passwordShow = !passwordShow;
+                                  });
+                                },
+                              ),
+                              hintText: 'Enter Your Password',
+                              hintStyle: poppins,
+                            ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
                           ElevatedButton(
@@ -96,6 +111,12 @@ class _LoginScreenState extends State<LoginScreen> {
                                               .txtlogin_password.text);
 
                                   if (isUserValid) {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content:
+                                          const Text("Login Successfull !!"),
+                                      backgroundColor: Colors.green.shade200,
+                                    ));
                                     showDialog(
                                       context: context,
                                       builder: (context) {
@@ -103,7 +124,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           shape: RoundedRectangleBorder(
                                               borderRadius:
                                                   BorderRadius.circular(10)),
-                                          title: Text("Welcome Back !!"),
+                                          title: const Text("Welcome Back !!"),
                                           content: Text(
                                               "${HomeController.homecontroller.username}"),
                                           actions: [
@@ -128,12 +149,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                   } else {
                                     ScaffoldMessenger.of(context)
                                         .showSnackBar(SnackBar(
-                                      content:
-                                          Text('Invalid email or password'),
+                                      backgroundColor: Colors.red.shade300,
+                                      content: Text(
+                                        'Invalid email or password',
+                                        style: GoogleFonts.poppins(),
+                                      ),
                                     ));
                                   }
-
-                                  print(username);
                                 }
                               },
                               child: Text(
