@@ -32,8 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               Container(
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.blue.shade200),
+                    borderRadius: BorderRadius.circular(20), color: Colors.blue.shade200),
                 child: Form(
                   key: formkey,
                   child: Padding(
@@ -43,8 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           TextFormField(
-                            controller:
-                                HomeController.homecontroller.txtlogin_email,
+                            controller: HomeController.homecontroller.txtlogin_email,
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return 'Enter Your Email';
@@ -56,8 +54,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                           TextFormField(
-                            controller:
-                                HomeController.homecontroller.txtlogin_password,
+                            controller: HomeController.homecontroller.txtlogin_password,
                             validator: (value) {
                               if (value!.isEmpty) {
                                 return 'Enter Your Password';
@@ -66,9 +63,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             obscureText: passwordShow,
                             decoration: InputDecoration(
                               suffixIcon: IconButton(
-                                icon: Icon(passwordShow
-                                    ? Icons.visibility
-                                    : Icons.visibility_off),
+                                icon: Icon(passwordShow ? Icons.visibility : Icons.visibility_off),
                                 onPressed: () {
                                   setState(() {
                                     passwordShow = !passwordShow;
@@ -90,31 +85,13 @@ class _LoginScreenState extends State<LoginScreen> {
                               onPressed: () {
                                 if (formkey.currentState!.validate()) {
                                   bool isUserValid = false;
-
-                                  for (Map user in HomeController
-                                      .homecontroller.userList) {
-                                    if (user["email"] ==
-                                            HomeController.homecontroller
-                                                .txtlogin_email.text &&
-                                        user["password"] ==
-                                            HomeController.homecontroller
-                                                .txtlogin_password.text) {
-                                      isUserValid = true;
-                                      break;
-                                    }
-                                  }
-                                  String? username =
-                                      HomeController.homecontroller.getUser(
-                                          HomeController.homecontroller
-                                              .txtlogin_email.text,
-                                          HomeController.homecontroller
-                                              .txtlogin_password.text);
-
+                                  String username = HomeController.homecontroller.getUser(
+                                      HomeController.homecontroller.txtlogin_email.text,
+                                      HomeController.homecontroller.txtlogin_password.text);
+                                  isUserValid = true;
                                   if (isUserValid) {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
-                                      content:
-                                          const Text("Login Successfull !!"),
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                      content: const Text("Login Successfull !!"),
                                       backgroundColor: Colors.green.shade200,
                                     ));
                                     showDialog(
@@ -122,19 +99,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                       builder: (context) {
                                         return AlertDialog(
                                           shape: RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(10)),
+                                              borderRadius: BorderRadius.circular(10)),
                                           title: const Text("Welcome Back !!"),
-                                          content: Text(
-                                              "${HomeController.homecontroller.username}"),
+                                          content: Text("${username}"),
                                           actions: [
                                             TextButton(
                                                 onPressed: () {
-                                                  HomeController.homecontroller
-                                                      .txtlogin_email
+                                                  HomeController.homecontroller.txtlogin_email
                                                       .clear();
-                                                  HomeController.homecontroller
-                                                      .txtlogin_password
+                                                  HomeController.homecontroller.txtlogin_password
                                                       .clear();
                                                   Navigator.pop(context);
                                                 },
@@ -147,8 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       },
                                     );
                                   } else {
-                                    ScaffoldMessenger.of(context)
-                                        .showSnackBar(SnackBar(
+                                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                       backgroundColor: Colors.red.shade300,
                                       content: Text(
                                         'Invalid email or password',

@@ -32,12 +32,17 @@ class HomeController {
   String us_email = '';
   String username = '';
   int index = 0;
+  int updateIndex = 0;
 
   bool isUpdate = false;
+  bool isSubUpdate = false;
 
   String? encodeData;
   String? decodeData;
   int? age;
+
+  int userIndex = 0;
+  int count = 0;
 
   Future<void> setData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -45,10 +50,22 @@ class HomeController {
     await prefs.setString("dataList", encodeData!);
   }
 
+  Future<void> setData2() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    encodeData = json.encode(userList[userIndex]["innerList"]);
+    await prefs.setString("innerList", encodeData!);
+  }
+
   Future<void> getData() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     decodeData = await prefs.getString('dataList');
     userList = json.decode(decodeData!);
+  }
+
+  Future<void> getData2() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    decodeData = await prefs.getString('innerList');
+    userList[userIndex]["innerList"] = json.decode(decodeData!);
   }
 
   void addUser() {
@@ -59,9 +76,26 @@ class HomeController {
       "age": age,
       "Dob": DateFormat("d/M/yyyy").format(selectedDate),
       "date": selectedDate.toString(),
-      // "Dob": selectedDate,
+      "innerList": [],
     });
     setData();
+  }
+
+  void addSubUser() {
+    if (userList.isNotEmpty && userIndex >= 0) {
+      if (userList[userIndex]["innerList"] == null) {
+        userList[userIndex]["innerList"] = []; // Initialize innerList if it's null
+      }
+      userList[userIndex]["innerList"].add({
+        "name": txt_name.text,
+        "email": txt_email.text,
+        "password": txt_password.text,
+        "age": age,
+        "Dob": DateFormat("d/M/yyyy").format(selectedDate),
+        "date": selectedDate.toString(),
+      });
+      setData2();
+    }
   }
 
   void updateUser(int index) {
@@ -77,18 +111,47 @@ class HomeController {
     setData();
   }
 
+  void updateSubUser(int userIndex, int subIndex) {
+    userList[index]["innerList"][subIndex] = ({
+      "name": txtup_name.text,
+      "email": txtup_email.text,
+      "Dob": DateFormat("d/M/yyyy").format(selectedDate),
+      "password": txtup_password.text,
+      "confirm": txtup_confirmPass,
+      "age": age,
+      "date": selectedDate.toString(),
+    });
+    setData2();
+  }
+
   void deleteData(int index) {
     userList.removeAt(index);
     setData();
   }
 
-  String? getUser(String email, String password) {
+  void deleteSubData({required int index, required int subindex}) {
+    userList[index]["innerList"].removeAt(subindex);
+  }
+
+  String getUser(String email, String password) {
     for (var user in userList) {
       us_email = user['email'];
       us_password = user['password'];
       if (user['email'] == email && user['password'] == password) {
         username = user['name'];
         break;
+      }
+    }
+    if (userList[userIndex]['innerList'] != null) {
+      final subUserList = userList[userIndex]['innerList'];
+      for (var subUser in subUserList) {
+        us_email = subUser['email'];
+        us_password = subUser['password'];
+        if (subUser['email'] == email && subUser['password'] == password) {
+          username = subUser['name'];
+          print("subusername======>$username");
+          break;
+        }
       }
     }
     return username;
